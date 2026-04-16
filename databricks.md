@@ -2,15 +2,17 @@
 
 ## CRIANDO PIPELINE DE DADOS (DATALAKE HOUSE)
 
-### 1. INGESTÃO DOS DADOS
+### ✅ 1. INGESTÃO DOS DADOS
 
-**CREATE SCHEMA**
+Segue a documentação para criar um schema no catalago com volume para processar e gerar tabelas prontas para uso.
+
+📎 **SCHEMA**
 
 Para criar um schema, no menu catalog (catalago), em workspace clique em criar.
 
-Nesse exemplo criamos um schema com o nome dsasource
+Nesse exemplo criamos um schema com o nome **dsasource**.
 
-Os schema podem ser de 3 tipos:
+Sobre o schema, temos 3 tipos:
 
 - volume
 - table
@@ -18,9 +20,9 @@ Os schema podem ser de 3 tipos:
 
 > VOLUME
 
-Serve para armazenar dados de forma persistente
-Compartilhar dados entre usuários e processos
-organizar dados fora de tabelas
+Serve para armazenar dados de forma persistente.
+Compartilhar dados entre usuários e processos.
+Organizar dados fora de tabelas.
 
 > TABLE
 
@@ -30,7 +32,12 @@ Serve para armazenar dados estruturados para consultas e processamentos via SQL 
 
 É um objeto que representa um modelo treinado, disponivel para ser reutilizado em previsões.
 
-**CREATE VOLUME**
+📎 **VOLUME**
+
+Dentro do schema **dsasource**, clicamos em criar e escolhemos Volume.
+
+Nome do volume: lab7
+Tipo do volume: gerenciado
 
 O volume pode ser:
 
@@ -42,15 +49,8 @@ O volume pode ser:
 
 É um repositório onde o controle não fica sob responsabilidade do databricks, geralmente um bucket no S3.
 
-Neste exemplo criamos um volume para armazenar os dados.
 
-Dentro do schema dsasource, clicamos em Criar e escolhemos Volume.
-
-Nome do volume: lab7
-Tipo do volume: gerenciado
-
-
-**UPLOAD**
+📎 **UPLOAD**
 
 Para inserir os dados dentro do volume fizemos o upload de arquivos .csv
 
@@ -70,14 +70,13 @@ Arquivos:
 - 02-DSA-Delta-Live-Tables.sql
 
 
-**ABRINDO NOTEBOOK**
+📎 **NOTEBOOK**
 
-Dentro do Worspace clicando sobre o arquivo 01-DSA-Carga-Inicial_Dados.ipynb o Databricks já reconhece o arquivo e abre dentro de um notebook.
+Dentro do Workspace clicando sobre o arquivo **01-DSA-Carga-Inicial_Dados.ipynb** o Databricks já reconhece o arquivo e abre um notebook.
 
 Para executar as celulas do notebook é necessário habilitar ou conectar um Serveless.
 Para conectar clique no combox superior com o nome Serveless escolha uma máquina disponivel.
 
-**NOVO SCHEMA COM TABELAS**
 
 > Como descobrir o path dos arquivos csv
 
@@ -89,59 +88,63 @@ Em lab7 (volume) que está dentro de dsasource, no final da linha onde temos os 
 /Volumes/workspace/dsasource/lab7/tipos_clientes.csv
 ```
 
-1. CRIANDO UM DF APARTIR DO .CSV
+💡 **SCHEMA E TABELAS**
+
+> 1. CRIANDO UM DF APARTIR DO .CSV
 
 ```python
 df_dsa_tipos = spark.read.option("header", "true").option("inferSchema", "true").csv("dbfs:/Volumes/workspace/dsasource/lab7/tipos_clientes.csv")
 ````
 
-> Exibindo conteúdo
+Exibindo conteúdo
 
 ```python
 display(df_dsa_tipos)
 ```
 
-2. CRIANDO UM NOVO SCHEMA
+> 2. CRIANDO UM NOVO SCHEMA
 
 ```python
 CREATE SCHEMA IF NOT EXISTS dsadlt;
 ```
 
-3. INSERINDO UMA TABELA DENTRO DO NOVO SCHEMA
+> 3. CRIANDO TABELA DELTA 
 
-> Criando um tabela delta, a partir de um df.
+Criando um tabela delta, a partir de um df.
 
 ```python
 df_dsa_tipos.write.format("delta").mode("append").saveAsTable("dsadlt.dsa_mapeamento_clientes")
 ```
 
-> Criando um unico DF Lendo os arquivos clientes_batch_*.csv
+> 4. CRIANDO TABELA A PARTIR DE 2 CSV
+
+Criando um unico DF Lendo os arquivos clientes_batch_*.csv
 
 ```python
 df_dsa_clientes = spark.read.option("header", "true").option("inferSchema", "true").csv("dbfs:/Volumes/workspace/dsasource/lab7/clientes_batch_*.csv")
 ```
 
-> Ordenando o df pelo id_cliente
+Ordenando o df pelo id_cliente
 
 ```python
 df_ordenado = df_dsa_clientes.orderBy("id_cliente")
 display(df_ordenado)
 ```
 
-> Ajustando o tipo da coluna de data.
+Ajustando o tipo da coluna de data.
 
 ```python
 from pyspark.sql.functions import expr
 df_dsa_clientes = df_dsa_clientes.withColumn("data_cadastro", expr("try_cast(data_cadastro as date)"))
 ```
 
-> Salva os dados na tabela.
+Salva os dados na tabela.
 
 ```python
 df_dsa_clientes.write.format("delta").option("mergeSchema", "true").mode("append").saveAsTable("dsadlt.dsa_fonte_clientes_diarios")
 ```
 
-> Caso precise deletar as tabelas
+> 5. COMO DELETAR TABELAS
 
 ```sql
 %sql 
