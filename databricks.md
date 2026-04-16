@@ -83,9 +83,11 @@ Para conectar clique no combox superior com o nome Serveless escolha uma máquin
 
 Em lab7 (volume) que está dentro de dsasource, no final da linha onde temos os arquivos clique nos 3 pontos e depois copiar caminho.
 
+```bash
 /Volumes/workspace/dsasource/lab7/clientes_batch_01.csv
 /Volumes/workspace/dsasource/lab7/clientes_batch_02.csv
 /Volumes/workspace/dsasource/lab7/tipos_clientes.csv
+```
 
 1. CRIANDO UM DF APARTIR DO .CSV
 
@@ -95,43 +97,57 @@ df_dsa_tipos = spark.read.option("header", "true").option("inferSchema", "true")
 
 > Exibindo conteúdo
 
+```python
 display(df_dsa_tipos)
+```
 
 2. CRIANDO UM NOVO SCHEMA
 
+```python
 CREATE SCHEMA IF NOT EXISTS dsadlt;
+```
 
 3. INSERINDO UMA TABELA DENTRO DO NOVO SCHEMA
 
 > Criando um tabela delta, a partir de um df.
 
+```python
 df_dsa_tipos.write.format("delta").mode("append").saveAsTable("dsadlt.dsa_mapeamento_clientes")
+```
 
 > Criando um unico DF Lendo os arquivos clientes_batch_*.csv
 
+```python
 df_dsa_clientes = spark.read.option("header", "true").option("inferSchema", "true").csv("dbfs:/Volumes/workspace/dsasource/lab7/clientes_batch_*.csv")
+```
 
 > Ordenando o df pelo id_cliente
 
+```python
 df_ordenado = df_dsa_clientes.orderBy("id_cliente")
 display(df_ordenado)
+```
 
 > Ajustando o tipo da coluna de data.
 
+```python
 from pyspark.sql.functions import expr
 df_dsa_clientes = df_dsa_clientes.withColumn("data_cadastro", expr("try_cast(data_cadastro as date)"))
+```
 
 > Salva os dados na tabela.
 
+```python
 df_dsa_clientes.write.format("delta").option("mergeSchema", "true").mode("append").saveAsTable("dsadlt.dsa_fonte_clientes_diarios")
+```
 
 > Caso precise deletar as tabelas
 
+```sql
 %sql 
 TRUNCATE TABLE dsadlt.dsa_mapeamento_clientes;
 DROP TABLE dsadlt.dsa_mapeamento_clientes;
 
 TRUNCATE TABLE dsadlt.dsa_clientes_diarios;
 DROP TABLE dsadlt.dsa_clientes_diarios;
-
-
+```
