@@ -4,7 +4,7 @@
 
 ### 1. INGESTÃO DOS DADOS
 
-**1. CREATE SCHEMA**
+**CREATE SCHEMA**
 
 Para criar um schema, no menu catalog (catalago), em workspace clique em criar.
 
@@ -16,21 +16,21 @@ Os schema podem ser de 3 tipos:
 - table
 - model
 
-> **Volume **
+> VOLUME
 
 Serve para armazenar dados de forma persistente
 Compartilhar dados entre usuários e processos
 organizar dados fora de tabelas
 
-> **Table**
+> TABLE
 
 Serve para armazenar dados estruturados para consultas e processamentos via SQL ou Spark.
 
-> **Model**
+> MODEL
 
 É um objeto que representa um modelo treinado, disponivel para ser reutilizado em previsões.
 
-**2. CREATE VOLUME**
+**CREATE VOLUME**
 
 O volume pode ser:
 
@@ -50,7 +50,7 @@ Nome do volume: lab7
 Tipo do volume: gerenciado
 
 
-**3. UPLOAD**
+**UPLOAD**
 
 Para inserir os dados dentro do volume fizemos o upload de arquivos .csv
 
@@ -62,8 +62,6 @@ clientes_batch_01.csv
 clientes_batch_02.csv
 tipos_clientes.csv
 
-**4. UPLOAD DO SCRIPT PARA PROCESSAMENTO**
-
 Dentro de Workspace (Espaço de trabalho), dentro de Home (Início) clique no metro 3 pontos e escolha importar.
 
 Arquivos:
@@ -72,14 +70,14 @@ Arquivos:
 02-DSA-Delta-Live-Tables.sql
 
 
-**5. Abrindo Notebook no Databricks**
+**ABRINDO NOTEBOOK**
 
 Dentro do Worspace clicando sobre o arquivo 01-DSA-Carga-Inicial_Dados.ipynb o Databricks já reconhece o arquivo e abre dentro de um notebook.
 
 Para executar as celulas do notebook é necessário habilitar ou conectar um Serveless.
 Para conectar clique no combox superior com o nome Serveless escolha uma máquina disponivel.
 
-**6. Executando Pipeline**
+**NOVO SCHEMA COM TABELAS**
 
 > Como descobrir o path dos arquivos csv
 
@@ -88,7 +86,6 @@ Em lab7 (volume) que está dentro de dsasource, no final da linha onde temos os 
 /Volumes/workspace/dsasource/lab7/clientes_batch_01.csv
 /Volumes/workspace/dsasource/lab7/clientes_batch_02.csv
 /Volumes/workspace/dsasource/lab7/tipos_clientes.csv
-
 
 1. CRIANDO UM DF APARTIR DO .CSV
 
@@ -135,34 +132,4 @@ DROP TABLE dsadlt.dsa_mapeamento_clientes;
 TRUNCATE TABLE dsadlt.dsa_clientes_diarios;
 DROP TABLE dsadlt.dsa_clientes_diarios;
 
-### 2. Validação do Pipeline
-
-**1. Delta Live Table (DLT)**
-
-É um framework projetado para simplificar a criação, execução e manutenção de pipelines.
-Apenas declaramos no DLT as transformações e o framework cuida do resto.
-
-Principais características:
-
-- Dependência entre tabelas
-- Orquestrações dos jobs
-- Atualizações incrementais
-- Gerenciamento de cluster
-
-Como funciona:
-
-Criamos um ou mais Pipelines e associa a um notabook 
-
-**2. Validação do Pipeline**
-
-Tempos um schema DSADLT com duas tabelas:
-
-- dsa_fonte_clientes_diarios
-- dsa_mapeamento_clientes
-
-Já temos os dados prontos de uma de uma schema disponivel.
-
-**3. Criando o Pipeline**
-
-Em Data Engineering na opção Delta Live Tables
 
