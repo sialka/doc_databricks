@@ -58,16 +58,16 @@ Dentro do schema dsasource, dentro do volume lab7, clicamos em fazer upload e se
 
 Arquivos:
 
-clientes_batch_01.csv
-clientes_batch_02.csv
-tipos_clientes.csv
+- clientes_batch_01.csv
+- clientes_batch_02.csv
+- tipos_clientes.csv
 
 Dentro de Workspace (Espaço de trabalho), dentro de Home (Início) clique no metro 3 pontos e escolha importar.
 
 Arquivos:
 
-01-DSA-Carga-Inicial_Dados.ipynb
-02-DSA-Delta-Live-Tables.sql
+- 01-DSA-Carga-Inicial_Dados.ipynb
+- 02-DSA-Delta-Live-Tables.sql
 
 
 **ABRINDO NOTEBOOK**
@@ -89,7 +89,9 @@ Em lab7 (volume) que está dentro de dsasource, no final da linha onde temos os 
 
 1. CRIANDO UM DF APARTIR DO .CSV
 
+```python
 df_dsa_tipos = spark.read.option("header", "true").option("inferSchema", "true").csv("dbfs:/Volumes/workspace/dsasource/lab7/tipos_clientes.csv")
+````
 
 > Exibindo conteúdo
 
