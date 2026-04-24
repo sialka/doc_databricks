@@ -2,7 +2,7 @@
 
 **DELTA LIVE TABLE (DLT)**
 
-🧩 Com a mudança recente agora é chamado de Lakeflow Declarative Pipelines
+🧩 Com a mudança recente agora é chamado de **Lakeflow Declarative Pipelines**.
 
 ### CRIAÇÃO DE PIPELINE
 
@@ -211,3 +211,23 @@ FROM live.dsa_dados_limpos_clientes
 GROUP BY genero;
 ```
 
+⚡ **EXECUTANDO O PIPELINE**
+
+Em Delta Live Tables clique em **Start**.
+
+🔦 **VALIDANDO RESULTADO**
+
+Dentro do catálogo em workspace, depois dsadlt.
+
+🟤 *Bronze:*
+- [x] dsa_clientes_diarios
+- [x] dsa_mapeamento_tipo_cliente
+
+⚪ *Silver:*
+- [x] dsa_dados_limpos_clientes
+
+🟡 *Gold:*
+- [x] dsa_estatisticas_clientes
+- [x] dsa_estatisticas_clientes_por_genero
+
+É possível agendar a execução do Pipeline em Schedule.
